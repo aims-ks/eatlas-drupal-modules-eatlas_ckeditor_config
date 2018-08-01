@@ -1,0 +1,30 @@
+/**
+ * CSS related to CKEditor, used in the Drupal website.
+ * This CSS do not affect the CKEditor iframe.
+ *
+ * NOTE: This CSS is independent from the theme. It apply
+ *   for both the website theme and the admin theme.
+ */
+
+/* Change the look of the body for the file info, in the image edition window (CKEditor) */
+body.eatlas-mediaframe-fileinfo,
+body.page-eatlas-mediaframe-fileinfo {
+	background-color: #FFFFFF;
+	padding: 0 !important;
+	font-size: 12px;
+}
+
+/* Hide the info bellow CKEditor. It takes a LOT of room... */
+.filter-guidelines {
+	display: none;
+}
+
+/* References at the end of a node */
+div.ref p, /* Old format */
+p.ref {
+	font-size: 0.8em;
+	line-height: 1.2em;
+	margin-left: 3em;
+	/* First line retreated to leave place for the number (1. bla bla) */
+	text-indent: -1.5em;
+}

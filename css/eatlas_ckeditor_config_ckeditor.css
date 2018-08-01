@@ -1,0 +1,93 @@
+/**
+ * CSS used in the CKEditor iframe.
+ * This CSS do not affect the Drupal website.
+ *
+ * NOTE: This CSS is independent from the theme. It apply
+ *   for both the website theme and the admin theme.
+ */
+
+.cke_editable {
+	line-height: 1.8em; /* Same as .field-name-body (eatlases theme, css/main.css) */
+	margin: 0 0.2em; /* Move the content away from the border a little */
+	min-width: 0; /* CKEditor do not like min-width 100% */
+}
+
+/* Invisible tables are displayed using dotted line in CKEditor
+	NOTE: Only apply when CKEditor do not specify a border. */
+.cke_editable th, .cke_editable td { border: 1px dotted #CCCCCC; }
+
+/* Fix CKEditor background color */
+.cke_editable,
+.cke_panel_container,
+.cke_panel_block,
+.cke_panel_listItem {
+	background-color: #FFFFFF;
+}
+
+/**
+ * CKEditor pseudo image frame
+ *   to give some indication to the user about the style used
+ *
+ * NOTE: We use "outline" instead of "border" to avoid getting
+ *   an image larger then what will appear on the rendered product.
+ *   See: http://stackoverflow.com/questions/19159977/inner-border-over-images-with-css
+ */
+.cke_editable [media_style=wikipedia] {
+	border: 1px solid #CCCCCC;
+	padding: 3px;
+	box-shadow: 3px 3px 10px #888888;
+}
+
+.cke_editable [media_style=onImage] {
+	outline: 20px solid rgba(4, 110, 156, 0.5);
+	outline-offset: -20px;
+}
+
+.cke_editable [media_style=enlarge] {
+	outline: 3px dashed #CCCCCC;
+	outline-offset: -3px;
+}
+
+.cke_editable [media_style=tile] {
+	border: 1px solid #d4d4d4;
+	padding-bottom: 2em;
+	background-color: #FFFFFF;
+}
+
+
+/**
+ * CKEditor frame block
+ * Define how to display the "Image frame block" format
+ * inside CKEditor. This is only a quick preview to how
+ * it will be displayed on the rendered product.
+ */
+.cke_editable .mediaframe_wikipedia_imgframeblk [media_style=wikipedia] {
+	/* Avoid double shadow */
+	box-shadow: none;
+}
+.cke_editable div.mediaframe_wikipedia_imgframeblk {
+	text-align: left;
+	display: inline-block;
+	color: #666666;
+	font-size: 0.8em;
+	line-height: normal;
+	background-color: #F9F9F9;
+	border: 1px solid #CCCCCC;
+	padding: 5px;
+	box-shadow: 3px 3px 10px #888888;
+}
+/* Reduce space between paragraphs in the frame block */
+.cke_editable div.mediaframe_wikipedia_imgframeblk > p {
+	margin: 0.5em 0.3em 0.1em 0.3em !important;
+	text-align: justify;
+}
+
+/* References at the end of a node */
+.cke_editable div.ref p, /* Old format */
+.cke_editable p.ref {
+	font-size: 0.8em;
+	line-height: 1.2em;
+	margin-left: 3em;
+	/* First line retreated to leave place for the number (1. bla bla) */
+	text-indent: -1.5em;
+}

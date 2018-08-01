@@ -1,0 +1,175 @@
+<?php
+
+/**
+ * Implements hook_wysiwyg_editor_settings_alter()
+ * Must keep in sync with seven_wysiwyg_editor_settings_alter
+ */
+function eatlas_ckeditor_config_wysiwyg_editor_settings_alter(&$settings, $context) {
+	/**
+	 * Value of $settings['toolbar'], when checking (almost) every checkboxes under
+	 * "Configuration > Wysiwyg profiles > Filtered HTML > BUTTONS AND PLUGINS"
+	 *
+	[0] => Array (
+		[0] => Bold
+		[1] => Italic
+		[2] => Underline
+		[3] => Strike
+		[4] => JustifyLeft
+		[5] => JustifyCenter
+		[6] => JustifyRight
+		[7] => JustifyBlock
+		[8] => BidiLtr
+		[9] => BidiRtl
+		[10] => BulletedList
+		[11] => NumberedList
+		[12] => Outdent
+		[13] => Indent
+		[14] => Undo
+		[15] => Redo
+		[16] => Link
+		[17] => Unlink
+		[18] => Anchor
+		[19] => Image
+		[20] => TextColor
+		[21] => BGColor
+		[22] => Superscript
+		[23] => Subscript
+		[24] => Blockquote
+		[25] => Source
+		[26] => HorizontalRule
+		[27] => Cut
+		[28] => Copy
+		[29] => Paste
+		[30] => PasteText
+		[31] => PasteFromWord
+		[32] => ShowBlocks
+		[33] => RemoveFormat
+		[34] => SpecialChar
+		[35] => Format
+		[36] => Font
+		[37] => FontSize
+		[38] => Styles
+		[39] => Table
+		[40] => SelectAll
+		[41] => Find
+		[42] => Replace
+		[43] => Smiley
+		[44] => CreateDiv
+		[45] => Maximize
+		[46] => SpellChecker
+		[47] => Scayt
+		[48] => media
+		[49] => break
+	)
+	*/
+
+	// Retrieve the format from the context
+	$format = isset($context['profile']) && property_exists($context['profile'], 'format') ? $context['profile']->format : NULL;
+
+	// Manually structured / ordered toolbar menu.
+	// Note that not all plugins (buttons) are listed here. To add a button to the toolbar,
+	// simply add its name (as listed above) to its respective block.
+	if ($format === 'basic_html') {
+		// basic_html
+		$settings['toolbar'] = array(
+			array('Source'),
+			array('Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord'),
+			array('Undo', 'Redo', 'Find', 'Replace'),
+			array('SelectAll', 'RemoveFormat'),
+			array('SpecialChar'),
+			array('Maximize', 'ShowBlocks'),
+			array('Bold', 'Italic'),
+			array('Subscript', 'Superscript'),
+			array('Link', 'Unlink'),
+		);
+		// This format is used with the media_description field.
+		// It just take too much space in the form.
+		$settings['height'] = '150';
+
+	} elseif ($format === 'filtered_html') {
+		// filtered_html
+		$settings['toolbar'] = array(
+			array('Source'),
+			array('Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord'),
+			array('Undo', 'Redo', 'Find', 'Replace'),
+			array('SelectAll', 'RemoveFormat'),
+			array('media', 'Table', 'HorizontalRule', 'SpecialChar'),
+			array('Maximize', 'ShowBlocks'),
+			array('Format'),
+			array('Bold', 'Italic', 'Underline'),
+			array('Subscript', 'Superscript'),
+			array('NumberedList', 'BulletedList'),
+			array('Outdent', 'Indent', 'Blockquote'),
+			array('JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'),
+			array('Link', 'Unlink', 'Anchor'),
+		);
+
+	} else {
+		// full_html (or any other format)
+		$settings['toolbar'] = array(
+			array('Source'),
+			array('Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord'),
+			array('Undo', 'Redo', 'Find', 'Replace'),
+			array('SelectAll', 'RemoveFormat'),
+			array('media', 'Table', 'HorizontalRule', 'SpecialChar'),
+			array('Maximize', 'ShowBlocks'),
+			array('Format'),
+			array('Bold', 'Italic', 'Underline'),
+			array('Subscript', 'Superscript'),
+			array('NumberedList', 'BulletedList'),
+			array('Outdent', 'Indent', 'Blockquote'),
+			array('JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'),
+			array('Link', 'Unlink', 'Anchor'),
+			array('break'),
+		);
+	}
+
+	// Disable CKEditor embedded filtering with CKEditor 3.1+
+	// (Drupal filtering is suffisent)
+	$settings['allowedContent'] = TRUE;
+
+	if (isset($settings['format_tags'])) {
+		// Add 'Image frame block' to CKEditor paragraph formats
+		$settings['format_tags'] .= ';imgframeblk';
+		$settings['format_imgframeblk'] = array(
+			'name' => 'Image frame block',
+			'attributes' => array(
+				'class' => 'mediaframe_wikipedia_imgframeblk'
+			),
+			'element' => 'div'
+		);
+
+		// Add 'References' to CKEditor paragraph formats
+		$settings['format_tags'] .= ';refblk';
+		$settings['format_refblk'] = array(
+			'name' => 'References',
+			'attributes' => array(
+				'class' => 'ref'
+			),
+			'element' => 'p'
+		);
+	}
+
+	// Use the CSS in CKEditor only
+	$settings['contentsCss'][] = '/' . drupal_get_path('module', 'eatlas_ckeditor_config') . '/css/eatlas_ckeditor_config_ckeditor.css';
+
+	// Other available config:
+	//$settings['bodyId'] = 'ckeditorBodyId';
+	//$settings['bodyClass'] = 'ckeditorBodyClass';
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ * Form ID: wysiwyg-profile-form
+ *   The WYSIWYG configuration page (admin/config/content/wysiwyg/profile/full_html/edit)
+ *
+ * Add a description to warm the admin that the button settings is
+ * ignored, because it is overriden in this module.
+ */
+function eatlas_ckeditor_config_form_wysiwyg_profile_form_alter(&$form, &$form_state) {
+	if (isset($form['buttons'])) {
+		$form['buttons']['#description'] = '<strong>IMPORTANT:</strong> Those settings are overridden by the <em>eAtlas CKEditor configuration</em> module.';
+	}
+}
+
+?>

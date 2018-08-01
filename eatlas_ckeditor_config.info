@@ -1,0 +1,18 @@
+; $Id$
+name = eAtlas CKEditor configuration
+description = [eatlas_ckeditor_config] Module used to apply some configuration on CKEditor, like the buttons.
+core = 7.x
+
+files[] = eatlas_ckeditor_config.module
+
+stylesheets[all][] = css/eatlas_ckeditor_config_drupal.css
+
+package = eAtlas
+
+dependencies[] = wysiwyg
+
+; Attributes used by the update module.
+; There fields needs to be removed if the module is migrated to Drupal.org
+project status url = "http://drupal.eatlas.org.au/modules/eatlas"
+version = "7.x-1.2"
+project = "eatlas_ckeditor_config"
